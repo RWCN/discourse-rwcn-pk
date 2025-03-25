@@ -1,4 +1,4 @@
-# **Plugin Name** Plugin
+# **Discourse Rwcn Pk** Plugin
 
 **Plugin Summary**
 

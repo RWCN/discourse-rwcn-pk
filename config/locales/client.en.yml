@@ -3,7 +3,7 @@ en:
     admin:
       site_settings:
         categories:
-          TODO_plugin_name: "Plugin Name"
+          discourse_rwcn_pk: "Discourse Rwcn Pk"
   js:
-    discourse_plugin_name:
+    discourse_rwcn_pk:
       placeholder: placeholder
