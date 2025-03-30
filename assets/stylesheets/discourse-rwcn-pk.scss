@@ -26,6 +26,14 @@
     font-size: 1.5em;
     margin-bottom: 10px;
     color: #ffd700;
+
+    .level {
+      font-size: medium;
+    }
+
+    .name {
+      font-size: larger;
+    }
   }
 
   .health-bar {
@@ -46,7 +54,11 @@
   }
 
   .rankings {
-    padding: 30px 0;
+    padding: 1rem 0;
+
+    .level {
+      font-size: small;
+    }
   }
 
   .rank-table {
@@ -57,12 +69,12 @@
 
   .rank-table th {
     background: #444;
-    padding: 12px;
+    padding: 0.2rem;
     text-align: left;
   }
 
   .rank-table td {
-    padding: 12px;
+    padding: 0.8rem;
     border-bottom: 1px solid #444;
   }
 
@@ -141,7 +153,7 @@
   }
 
   .skill-button {
-    padding: 8px 15px;
+    padding: 0.2rem 0.2rem;
     background: #444;
     border: none;
     border-radius: 5px;
@@ -164,9 +176,10 @@
   /* 新增玩家信息栏样式 */
   .player-status {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 30px;
+    padding: 0.8rem 1.5rem;
     background: #363636;
     border-radius: 10px;
     margin-bottom: 20px;
@@ -176,13 +189,13 @@
     display: flex;
     flex: 1;
     align-items: center;
-    gap: 20px;
+    gap: 0.1rem;
   }
 
   .level-badge {
     background: #ffd700;
     color: #2c2c2c;
-    padding: 8px 15px;
+    padding: 0.1rem 0.4rem;
     border-radius: 20px;
     font-weight: bold;
   }
@@ -202,9 +215,9 @@
     border-radius: 8px;
     overflow: hidden;
     position: relative;
-    margin-left: 50px;
-    margin-right: 50px;
-    min-width: 200px; /* 添加最小宽度 */
+    margin-left: 1rem;
+    margin-right: 1rem;
+    min-width: 1rem; /* 添加最小宽度 */
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
   }
 

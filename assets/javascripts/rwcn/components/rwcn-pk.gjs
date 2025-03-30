@@ -308,11 +308,11 @@ export class RwcnPk extends Component {
         <div id="rwcn-pk-battle-area" class="battle-area">
           <div class="fighter">
             <div class="avatar">
-              {{avatar this.battle.guest imageSize="huge"}}
+              {{avatar this.battle.guest imageSize="medium"}}
             </div>
             <div class="username">
-              Lv.{{this.battle.guest.level}}
-              {{this.battle.guest.name}}
+              <div class="level">Lv.{{this.battle.guest.level}}</div>
+              <div class="name">{{this.battle.guest.name}}</div>
             </div>
             <div class="health-bar">
               <div
@@ -324,11 +324,12 @@ export class RwcnPk extends Component {
 
           <div class="fighter">
             <div class="avatar">
-              {{avatar this.battle.master imageSize="huge"}}
+              {{avatar this.battle.master imageSize="medium"}}
             </div>
             <div class="username">
-              Lv.{{this.battle.master.level}}
-              {{this.battle.master.name}}
+              <div class="level">Lv.{{this.battle.master.level}}</div>
+              <div class="name">{{this.battle.master.name}}</div>
+
             </div>
             <div class="health-bar">
               <div
@@ -492,8 +493,8 @@ export class RwcnPk extends Component {
                   <tr>
                     <td>{{userRank.rank}}</td>
                     <td>
-                      {{avatar userRank imageSize="medium"}}
-                      Lv.{{userRank.level}}
+                      {{avatar userRank imageSize="tiny"}}
+                      <span class="level">Lv.{{userRank.level}}</span>
                       {{userRank.name}}
                     </td>
                     <td>{{userRank.win}}</td>
