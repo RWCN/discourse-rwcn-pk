@@ -32,7 +32,9 @@
     }
 
     .name {
-      font-size: larger;
+      word-wrap: break-word;
+      word-break: break-all;
+      font-size: large;
     }
   }
 
@@ -71,6 +73,7 @@
     background: #444;
     padding: 0.2rem;
     text-align: left;
+    font-size: small;
   }
 
   .rank-table td {
@@ -107,7 +110,7 @@
   .skill-panel {
     background: #3a3a3a;
     border-radius: 12px;
-    padding: 25px;
+    padding: 1rem;
     margin: 30px 0;
     border: 2px solid #444;
   }
