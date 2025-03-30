@@ -115,7 +115,7 @@ module ::DiscourseRwcnPk
       attack = params[:attack].to_i
       speed = params[:speed].to_i
 
-      render status: :bad_request if health < 0 || defense < 0 || attack < 0 || sped < 0
+      render status: :bad_request if health < 0 || defense < 0 || attack < 0 || speed < 0
       render status: :bad_request if !(health > 0 || defense > 0 || attack > 0 || speed > 0)
 
       if user_stat.skill_point < health + defense + attack + speed
