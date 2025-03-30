@@ -3,7 +3,7 @@
 # name: discourse-rwcn-pk
 # about: TODO
 # meta_topic_id: TODO
-# version: 0.1.2
+# version: 0.1.3
 # authors: zerodegress <zerodegress@outlook.com>
 # url: https://github.com/RWCN/discourse-rwcn-pk
 # required_version: 2.7.0
