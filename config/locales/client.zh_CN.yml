@@ -1,0 +1,41 @@
+zh_CN:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          discourse_rwcn_pk: RWCN 擂台
+  js:
+    rwcn_pk:
+      rank: 排行榜
+      rank_top10: 排行榜 TOP10
+      empty_rank: 排行榜还没有人
+      title: RWCN擂台
+      challenge: 挑战
+      rank_pos: 排名
+      player_name: 玩家名称
+      win_count: 胜场
+      alloc_skill_confirm: 确认分配
+      skill_point_allocation: 技能点分配
+      remained_skill_point: '剩余技能点数：'
+      skill:
+        health_buff: 生命强化
+        health_buff_desc: 每级提升1点生命
+        defense_buff: 防御强化
+        defense_buff_desc: 每级提升1点防御
+        attack_buff: 攻击强化
+        attack_buff_desc: 每级提升1点攻击
+        speed_buff: 速度强化
+        speed_buff_desc: 每级提升1点速度
+      battle:
+        info:
+          battle_start: 【系统提示】战斗开始
+          battle_end: 【系统提示】战斗结束
+        attack: '%{from_name} 对 %{to_name} 造成了 %{damage} 点伤害'
+        crit: '会心一击！%{from_name} 对 %{to_name} 造成了 %{damage} 点伤害'
+        miss: '千钧一发！%{to_name} 闪避了 %{from_name} 的攻击'
+      admin:
+        user_id: 用户ID
+        user_id_placeholder: 输入用户ID
+        rank: 排名
+        rank_placeholder: 输入排名
+        submit: 提交

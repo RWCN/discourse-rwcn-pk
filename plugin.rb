@@ -5,10 +5,14 @@
 # meta_topic_id: TODO
 # version: 0.1.0
 # authors: zerodegress <zerodegress@outlook.com>
-# url: TODO
+# url: https://github.com/RWCN/discourse-rwcn-pk
 # required_version: 2.7.0
 
 enabled_site_setting :discourse_rwcn_pk_enabled
+
+register_asset "stylesheets/discourse-rwcn-pk.scss"
+
+add_admin_route "rwcn_pk.title", "rwcn-pk"
 
 module ::DiscourseRwcnPk
   PLUGIN_NAME = "discourse-rwcn-pk"

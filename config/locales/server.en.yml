@@ -1,1 +1,3 @@
 en:
+  site_settings:
+    discourse_rwcn_pk_enabled: Enable RWCN PK

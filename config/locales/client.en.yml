@@ -3,7 +3,39 @@ en:
     admin:
       site_settings:
         categories:
-          discourse_rwcn_pk: "Discourse Rwcn Pk"
+          discourse_rwcn_pk: Discourse RWCN PK
   js:
-    discourse_rwcn_pk:
-      placeholder: placeholder
+    rwcn_pk:
+      rank: Rank
+      rank_top10: Rank TOP10
+      empty_rank: No one in rank.
+      title: RWCN PK
+      challenge: Challenge
+      rank_pos: rank
+      player_name: Player Name
+      win_count: Wins
+      alloc_skill_confirm: Confirm Allocation
+      skill_point_allocation: Skill Point Allocation
+      remained_skill_point: 'Remained Skill Point:'
+      skill:
+        health_buff: Health Buff
+        health_buff_desc: Boosts Health by 1 point per level
+        defense_buff: Defense Buff
+        defense_buff_desc: Boosts Defense by 1 point per level
+        attack_buff: Attack Buff
+        attack_buff_desc: Boosts Attack by 1 point per level
+        speed_buff: Speed Buff
+        speed_buff_desc: Boosts Speed by 1 point per level
+      battle:
+        info:
+          battle_start: '[SystemInfo]Battle Start'
+          battle_end: '[SystemInfo]Battle End'
+        attack: '%{from_name} does %{damage} points of damage to %{to_name}'
+        crit: 'Heart Strike! %{from_name} does %{damage} to %{to_name}!'
+        miss: "A close call! %{to_name} dodges %{from_name}'s attack!"
+      admin:
+        user_id: User ID
+        user_id_placeholder: input user ID
+        rank: Rank
+        rank_placeholder: input rank
+        submit: Submit

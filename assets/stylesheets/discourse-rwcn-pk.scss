@@ -1,0 +1,264 @@
+.rwcn-pk {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #2c2c2c;
+  color: white;
+  font-family: Arial, sans-serif;
+
+  .battle-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 30px 0;
+    border-bottom: 3px solid #444;
+    gap: 30px;
+    padding-bottom: 40px;
+  }
+
+  .fighter {
+    text-align: center;
+    padding: 20px;
+    background: #3a3a3a;
+    border-radius: 12px;
+  }
+
+  .username {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: #ffd700;
+  }
+
+  .health-bar {
+    width: 80%;
+    height: 20px;
+    background: #444;
+    border-radius: 10px;
+    margin: 0 auto;
+    overflow: hidden;
+    transition: 500ms;
+  }
+
+  .health-value {
+    width: 75%;
+    height: 100%;
+    background: #f44;
+    transition: width 0.3s ease;
+  }
+
+  .rankings {
+    padding: 30px 0;
+  }
+
+  .rank-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+
+  .rank-table th {
+    background: #444;
+    padding: 12px;
+    text-align: left;
+  }
+
+  .rank-table td {
+    padding: 12px;
+    border-bottom: 1px solid #444;
+  }
+
+  .rank-table tr:nth-child(even) {
+    background: #363636;
+  }
+
+  .battle-log {
+    grid-column: 1 / -1;
+    height: 150px;
+    background: #1a1a1a;
+    border: 2px solid #444;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 20px;
+    overflow-y: auto;
+  }
+
+  .log-entry {
+    padding: 8px 0;
+    color: #e0e0e0;
+    border-bottom: 1px dashed #333;
+    font-size: 0.95em;
+  }
+
+  .log-entry:last-child {
+    border-bottom: none;
+  }
+
+  .skill-panel {
+    background: #3a3a3a;
+    border-radius: 12px;
+    padding: 25px;
+    margin: 30px 0;
+    border: 2px solid #444;
+  }
+
+  .skill-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .skill-points {
+    color: #ffd700;
+    font-size: 1.2em;
+  }
+
+  .skill-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: #2c2c2c;
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+
+  .skill-icon {
+    width: 40px;
+    height: 40px;
+    background: #555;
+    border-radius: 6px;
+    margin-right: 15px;
+  }
+
+  .skill-info {
+    flex: 1;
+    min-width: 150px;
+  }
+
+  .skill-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .skill-button {
+    padding: 8px 15px;
+    background: #444;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .skill-button:hover {
+    background: #555;
+  }
+
+  .skill-level {
+    min-width: 40px;
+    text-align: center;
+    font-weight: bold;
+    color: #ffd700;
+  }
+
+  /* 新增玩家信息栏样式 */
+  .player-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: #363636;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  .level-box {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .level-badge {
+    background: #ffd700;
+    color: #2c2c2c;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+  }
+
+  .player-name {
+    flex: 0;
+    font-size: 1.2em;
+    color: #00a8ff;
+    font-weight: bold;
+  }
+
+  /* 优化后的经验条样式 */
+  .exp-bar {
+    flex: 1;
+    height: 16px;
+    background: #333;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    margin-left: 50px;
+    margin-right: 50px;
+    min-width: 200px; /* 添加最小宽度 */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+
+  .exp-progress {
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      rgba(0, 168, 255, 1) 0%,
+      rgba(0, 151, 230, 1) 100%
+    );
+    transition: width 0.5s ease;
+    position: relative;
+  }
+
+  /* 添加进度条纹动画 */
+  .exp-progress::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.15) 25%,
+      transparent 25%,
+      transparent 50%,
+      rgba(255, 255, 255, 0.15) 50%,
+      rgba(255, 255, 255, 0.15) 75%,
+      transparent 75%,
+      transparent
+    );
+    background-size: 40px 40px;
+    animation: progress-stripes 2s linear infinite;
+  }
+
+  .exp-text {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size: 0.8em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    z-index: 1; /* 确保文字在进度条上方 */
+  }
+
+  @keyframes progress-stripes {
+    0% {
+      background-position: 40px 0;
+    }
+
+    100% {
+      background-position: 0 0;
+    }
+  }
+}
