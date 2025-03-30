@@ -17,6 +17,7 @@ en:
       alloc_skill_confirm: Confirm Allocation
       skill_point_allocation: Skill Point Allocation
       remained_skill_point: 'Remained Skill Point:'
+      remained_day_try: "Today's remained try:"
       skill:
         health_buff: Health Buff
         health_buff_desc: Boosts Health by 1 point per level
@@ -39,3 +40,6 @@ en:
         rank: Rank
         rank_placeholder: input rank
         submit: Submit
+        clear_all_data: Clear All Data
+        data_manage: Data Manage
+        other_manage: Other Manage

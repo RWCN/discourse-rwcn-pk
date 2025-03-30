@@ -2,7 +2,6 @@ import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
 import DButton from "discourse/components/d-button";
-import TextField from "discourse/components/text-field";
 import { ajax } from "discourse/lib/ajax";
 import { i18n } from "discourse-i18n";
 
@@ -35,29 +34,29 @@ export class RwcnPkAdmin extends Component {
     });
   }
 
+  @action
+  async clearAllData() {
+    await ajax("/rwcn-pk/admin/clear_all", {
+      type: "POST",
+    });
+  }
+
   <template>
     <div class="rwcn-rank-admin">
-      <div>{{i18n "rwcn_pk.admin.user_id"}}</div>
-      <TextField
-        @type="number"
-        @value={{this.userId}}
-        @placeholderKey="rwcn_pk.admin.user_id_placeholder"
-        @onChange={{this.updateUserId}}
-      />
-      <div>{{i18n "rwcn_pk.admin.rank"}}</div>
-      <TextField
-        @type="number"
-        @value={{this.rank}}
-        @placeholderKey="rwcn_pk.admin.rank_placeholder"
-        @onChange={{this.updateRank}}
-      />
-      <div><DButton
-          @action={{this.submit}}
-          @label="rwcn_pk.admin.submit"
-          @icon="eye"
-          @id="rwcn-pk-admin-submit"
-        /></div>
+      <!-- 头部操作栏 -->
+      <div class="admin-header">
+        <h1 class="admin-title">{{i18n "rwcn_pk.admin.data_manage"}}</h1>
+        <DButton
+          @class="danger-btn"
+          @action={{this.clearAllData}}
+          @label="rwcn_pk.admin.clear_all_data"
+        />
+      </div>
 
+      <!-- 主内容区 -->
+      <div class="admin-content">
+        <p>{{i18n "rwcn_pk.admin.other_manage"}}</p>
+      </div>
     </div>
   </template>
 }

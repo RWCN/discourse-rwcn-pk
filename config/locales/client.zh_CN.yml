@@ -17,6 +17,7 @@ zh_CN:
       alloc_skill_confirm: 确认分配
       skill_point_allocation: 技能点分配
       remained_skill_point: '剩余技能点数：'
+      remained_day_try: "今日剩余尝试次数："
       skill:
         health_buff: 生命强化
         health_buff_desc: 每级提升1点生命
@@ -39,3 +40,6 @@ zh_CN:
         rank: 排名
         rank_placeholder: 输入排名
         submit: 提交
+        clear_all_data: 清空所有数据
+        data_manage: 数据管理
+        other_manage: 其他管理

@@ -10,11 +10,12 @@ DiscourseRwcnPk::Engine.routes.draw do
   post "challenge.json" => "rwcn_pk#challenge"
   post "alloc_sp.json" => "rwcn_pk#alloc_sp"
 
-  post "admin/change" => "rwcn_pk#admin_change", :constraints => StaffConstraint.new
+  post "admin/change" => "rwcn_pk#admin_change", :constraints => AdminConstraint.new
+  post "admin/clear_all" => "rwcn_pk#admin_clear_all", :constraints => AdminConstraint.new
 end
 
 Discourse::Application.routes.draw do
   mount ::DiscourseRwcnPk::Engine, at: "rwcn-pk"
 
-  get "/admin/plugins/rwcn-pk" => "admin/plugins#index", :constraints => StaffConstraint.new
+  get "/admin/plugins/rwcn-pk" => "admin/plugins#index", :constraints => AdminConstraint.new
 end

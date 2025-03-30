@@ -14,6 +14,10 @@ class UserRwcnPkStat < ActiveRecord::Base
             :crit,
             presence: true
 
+  validates :defense, numericality: { greater_than_or_equal_to: 0 }
+
+  validates :attack, :speed, :miss, :health, :crit, numericality: { greater_than: 0 }
+
   validates :level,
             :exp,
             :skill_point,

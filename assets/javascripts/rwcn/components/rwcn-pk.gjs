@@ -226,6 +226,9 @@ export class RwcnPk extends Component {
 
   @action
   async challenge(username) {
+    if (this.playingBattle) {
+      return;
+    }
     const result = await ajax("/rwcn-pk/challenge.json", {
       type: "POST",
       data: { username },
@@ -277,6 +280,9 @@ export class RwcnPk extends Component {
 
   @action
   async confirmSkillPoint() {
+    if (this.playingBattle) {
+      return;
+    }
     await ajax("/rwcn-pk/alloc_sp.json", {
       type: "POST",
       data: this.skillsToAlloc,
@@ -346,179 +352,194 @@ export class RwcnPk extends Component {
         </div>
       {{/if}}
 
-      <!-- 排行榜 -->
-      <ConditionalLoadingSpinner @condition={{this.loading}}>
-        <div class="player-status">
-          <div class="level-box">
-            <div class="level-badge">Lv.{{this.currentStat.level}}</div>
-            <div class="exp-bar">
-              <div
-                class="exp-progress"
-                style={{this.currentExpBarProgressStyle}}
-              ></div>
-              <div class="exp-text">{{this.currentStat.exp}}/20</div>
+      {{#if this.notPlayingBattle}}
+        <!-- 排行榜 -->
+        <ConditionalLoadingSpinner @condition={{this.loading}}>
+          <div class="player-status">
+            <div class="level-box">
+              <div class="level-badge">Lv.{{this.currentStat.level}}</div>
+              <div class="exp-bar">
+                <div
+                  class="exp-progress"
+                  style={{this.currentExpBarProgressStyle}}
+                ></div>
+                <div class="exp-text">{{this.currentStat.exp}}/20</div>
+              </div>
             </div>
-          </div>
-          <div class="player-name">{{this.currentRank.name}}</div>
-        </div>
-
-        <div id="rwcn-pk-skill-panel" class="skill-panel">
-          <div class="skill-header">
-            <h2>{{i18n "rwcn_pk.skill_point_allocation"}}</h2>
-            <div class="skill-points">{{i18n
-                "rwcn_pk.remained_skill_point"
-              }}<span>{{this.availableSkillPoint}}</span></div>
+            <div class="player-name">{{this.currentRank.name}}</div>
           </div>
 
-          <div class="skill-item">
-            <div class="skill-icon"></div>
-            <div class="skill-info">
-              <div class="skill-name">{{i18n "rwcn_pk.skill.health_buff"}}</div>
-              <div class="skill-desc">{{i18n
-                  "rwcn_pk.skill.health_buff_desc"
-                }}</div>
+          <div id="rwcn-pk-skill-panel" class="skill-panel">
+            <div class="skill-header">
+              <h2>{{i18n "rwcn_pk.skill_point_allocation"}}</h2>
+              <div class="skill-points">{{i18n
+                  "rwcn_pk.remained_skill_point"
+                }}<span>{{this.availableSkillPoint}}</span></div>
             </div>
-            <div class="skill-controls">
-              <DButton
-                @class="skill-button"
-                @icon="minus"
-                @disabled={{this.noAllocedSkillPoint}}
-                @action={{fn this.reallocSkillPoint "health"}}
-              />
-              <div class="skill-level">{{(this.previewSkill "health")}}</div>
-              <DButton
-                @class="skill-button"
-                @icon="plus"
-                @disabled={{this.noSkillPointAvailable}}
-                @action={{fn this.allocSkillPoint "health"}}
-              />
-            </div>
-          </div>
 
-          <div class="skill-item">
-            <div class="skill-icon"></div>
-            <div class="skill-info">
-              <div class="skill-name">{{i18n
-                  "rwcn_pk.skill.defense_buff"
-                }}</div>
-              <div class="skill-desc">{{i18n
-                  "rwcn_pk.skill.defense_buff_desc"
-                }}</div>
+            <div class="skill-item">
+              <div class="skill-icon"></div>
+              <div class="skill-info">
+                <div class="skill-name">{{i18n
+                    "rwcn_pk.skill.health_buff"
+                  }}</div>
+                <div class="skill-desc">{{i18n
+                    "rwcn_pk.skill.health_buff_desc"
+                  }}</div>
+              </div>
+              <div class="skill-controls">
+                <DButton
+                  @class="skill-button"
+                  @icon="minus"
+                  @disabled={{this.noAllocedSkillPoint}}
+                  @action={{fn this.reallocSkillPoint "health"}}
+                />
+                <div class="skill-level">{{(this.previewSkill "health")}}</div>
+                <DButton
+                  @class="skill-button"
+                  @icon="plus"
+                  @disabled={{this.noSkillPointAvailable}}
+                  @action={{fn this.allocSkillPoint "health"}}
+                />
+              </div>
             </div>
-            <div class="skill-controls">
-              <DButton
-                @class="skill-button"
-                @icon="minus"
-                @disabled={{this.noAllocedSkillPoint}}
-                @action={{fn this.reallocSkillPoint "defense"}}
-              />
-              <div class="skill-level">{{(this.previewSkill "defense")}}</div>
-              <DButton
-                @class="skill-button"
-                @icon="plus"
-                @disabled={{this.noSkillPointAvailable}}
-                @action={{fn this.allocSkillPoint "defense"}}
-              />
-            </div>
-          </div>
 
-          <div class="skill-item">
-            <div class="skill-icon"></div>
-            <div class="skill-info">
-              <div class="skill-name">{{i18n "rwcn_pk.skill.attack_buff"}}</div>
-              <div class="skill-desc">{{i18n
-                  "rwcn_pk.skill.attack_buff_desc"
-                }}</div>
+            <div class="skill-item">
+              <div class="skill-icon"></div>
+              <div class="skill-info">
+                <div class="skill-name">{{i18n
+                    "rwcn_pk.skill.defense_buff"
+                  }}</div>
+                <div class="skill-desc">{{i18n
+                    "rwcn_pk.skill.defense_buff_desc"
+                  }}</div>
+              </div>
+              <div class="skill-controls">
+                <DButton
+                  @class="skill-button"
+                  @icon="minus"
+                  @disabled={{this.noAllocedSkillPoint}}
+                  @action={{fn this.reallocSkillPoint "defense"}}
+                />
+                <div class="skill-level">{{(this.previewSkill "defense")}}</div>
+                <DButton
+                  @class="skill-button"
+                  @icon="plus"
+                  @disabled={{this.noSkillPointAvailable}}
+                  @action={{fn this.allocSkillPoint "defense"}}
+                />
+              </div>
             </div>
-            <div class="skill-controls">
-              <DButton
-                @class="skill-button"
-                @icon="minus"
-                @disabled={{this.noAllocedSkillPoint}}
-                @action={{fn this.reallocSkillPoint "attack"}}
-              />
-              <div class="skill-level">{{(this.previewSkill "attack")}}</div>
-              <DButton
-                @class="skill-button"
-                @icon="plus"
-                @disabled={{this.noSkillPointAvailable}}
-                @action={{fn this.allocSkillPoint "attack"}}
-              />
-            </div>
-          </div>
 
-          <div class="skill-item">
-            <div class="skill-icon"></div>
-            <div class="skill-info">
-              <div class="skill-name">{{i18n "rwcn_pk.skill.speed_buff"}}</div>
-              <div class="skill-desc">{{i18n
-                  "rwcn_pk.skill.speed_buff_desc"
-                }}</div>
+            <div class="skill-item">
+              <div class="skill-icon"></div>
+              <div class="skill-info">
+                <div class="skill-name">{{i18n
+                    "rwcn_pk.skill.attack_buff"
+                  }}</div>
+                <div class="skill-desc">{{i18n
+                    "rwcn_pk.skill.attack_buff_desc"
+                  }}</div>
+              </div>
+              <div class="skill-controls">
+                <DButton
+                  @class="skill-button"
+                  @icon="minus"
+                  @disabled={{this.noAllocedSkillPoint}}
+                  @action={{fn this.reallocSkillPoint "attack"}}
+                />
+                <div class="skill-level">{{(this.previewSkill "attack")}}</div>
+                <DButton
+                  @class="skill-button"
+                  @icon="plus"
+                  @disabled={{this.noSkillPointAvailable}}
+                  @action={{fn this.allocSkillPoint "attack"}}
+                />
+              </div>
             </div>
-            <div class="skill-controls">
-              <DButton
-                @class="skill-button"
-                @icon="minus"
-                @disabled={{this.noAllocedSkillPoint}}
-                @action={{fn this.reallocSkillPoint "speed"}}
-              />
-              <div class="skill-level">{{(this.previewSkill "speed")}}</div>
-              <DButton
-                @class="skill-button"
-                @icon="plus"
-                @disabled={{this.noSkillPointAvailable}}
-                @action={{fn this.allocSkillPoint "speed"}}
-              />
+
+            <div class="skill-item">
+              <div class="skill-icon"></div>
+              <div class="skill-info">
+                <div class="skill-name">{{i18n
+                    "rwcn_pk.skill.speed_buff"
+                  }}</div>
+                <div class="skill-desc">{{i18n
+                    "rwcn_pk.skill.speed_buff_desc"
+                  }}</div>
+              </div>
+              <div class="skill-controls">
+                <DButton
+                  @class="skill-button"
+                  @icon="minus"
+                  @disabled={{this.noAllocedSkillPoint}}
+                  @action={{fn this.reallocSkillPoint "speed"}}
+                />
+                <div class="skill-level">{{(this.previewSkill "speed")}}</div>
+                <DButton
+                  @class="skill-button"
+                  @icon="plus"
+                  @disabled={{this.noSkillPointAvailable}}
+                  @action={{fn this.allocSkillPoint "speed"}}
+                />
+              </div>
             </div>
+            <DButton
+              @label="rwcn_pk.alloc_skill_confirm"
+              @action={{this.confirmSkillPoint}}
+            />
           </div>
-          <DButton
-            @label="rwcn_pk.alloc_skill_confirm"
-            @action={{this.confirmSkillPoint}}
-          />
-        </div>
-        <div class="rankings">
-          <h2>{{i18n "rwcn_pk.rank_top10"}}</h2>
-          {{#if this.rank}}
-            <table class="rank-table">
-              <thead>
-                <tr>
-                  <th>{{i18n "rwcn_pk.rank_pos"}}</th>
-                  <th>{{i18n "rwcn_pk.player_name"}}</th>
-                  <th>{{i18n "rwcn_pk.win_count"}}</th>
-                  <th>{{i18n "rwcn_pk.challenge"}}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {{#each this.rank as |userRank|}}
+          <div class="challenge-status">
+            <div class="challenge-text">
+              {{i18n "rwcn_pk.remained_day_try"}}
+            </div>
+            <div class="challenge-count">{{this.currentRank.day_try}}/10</div>
+          </div>
+          <div class="rankings">
+            <h2>{{i18n "rwcn_pk.rank_top10"}}</h2>
+            {{#if this.rank}}
+              <table class="rank-table">
+                <thead>
                   <tr>
-                    <td>{{userRank.rank}}</td>
-                    <td>
-                      {{avatar userRank imageSize="tiny"}}
-                      <span class="level">Lv.{{userRank.level}}</span>
-                      {{userRank.name}}
-                    </td>
-                    <td>{{userRank.win}}</td>
-                    <td>
-                      {{#if
-                        (this.canChallenge
-                          this.currentRank userRank.username userRank.rank
-                        )
-                      }}
-                        <DButton
-                          @label="rwcn_pk.challenge"
-                          @action={{fn this.challenge userRank.username}}
-                        />
-                      {{/if}}
-                    </td>
+                    <th>{{i18n "rwcn_pk.rank_pos"}}</th>
+                    <th>{{i18n "rwcn_pk.player_name"}}</th>
+                    <th>{{i18n "rwcn_pk.win_count"}}</th>
+                    <th>{{i18n "rwcn_pk.challenge"}}</th>
                   </tr>
-                {{/each}}
-              </tbody>
-            </table>
-          {{else}}
-            {{i18n "rwcn_pk.empty_rank"}}
-          {{/if}}
-        </div>
-      </ConditionalLoadingSpinner>
+                </thead>
+                <tbody>
+                  {{#each this.rank as |userRank|}}
+                    <tr>
+                      <td>{{userRank.rank}}</td>
+                      <td>
+                        {{avatar userRank imageSize="tiny"}}
+                        <span class="level">Lv.{{userRank.level}}</span>
+                        <span class="name">{{userRank.name}}</span>
+                      </td>
+                      <td>{{userRank.win}}</td>
+                      <td>
+                        {{#if
+                          (this.canChallenge
+                            this.currentRank userRank.username userRank.rank
+                          )
+                        }}
+                          <DButton
+                            @class="challenge-button"
+                            @label="rwcn_pk.challenge"
+                            @action={{fn this.challenge userRank.username}}
+                          />
+                        {{/if}}
+                      </td>
+                    </tr>
+                  {{/each}}
+                </tbody>
+              </table>
+            {{else}}
+              {{i18n "rwcn_pk.empty_rank"}}
+            {{/if}}
+          </div>
+        </ConditionalLoadingSpinner>
+      {{/if}}
     </div>
   </template>
 }

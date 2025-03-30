@@ -115,6 +115,9 @@ module ::DiscourseRwcnPk
       attack = params[:attack].to_i
       speed = params[:speed].to_i
 
+      render status: :bad_request if health < 0 || defense < 0 || attack < 0 || sped < 0
+      render status: :bad_request if !(health > 0 || defense > 0 || attack > 0 || speed > 0)
+
       if user_stat.skill_point < health + defense + attack + speed
         render head: :bad_request
       else
@@ -152,6 +155,7 @@ module ::DiscourseRwcnPk
       if (current_user_rank.rank_ - target_user_rank.rank_) <= 0
         return render status: :bad_request, json: { err: "rank" }
       end
+      current_user_rank.update!(day_try: current_user_rank.day_try - 1)
       render json: pk(target_user_id, current_user_id)
     end
 
@@ -163,6 +167,22 @@ module ::DiscourseRwcnPk
       UserRwcnPkRank.find(user_id).update(rank_: rank)
 
       render json: {}
+    end
+
+    def admin_clear_all
+      UserRwcnPkRank.update_all(win: 0, day_try: 10, last_battle_date: Date.current)
+
+      UserRwcnPkStat.update_all(
+        level: 1,
+        exp: 0,
+        skill_point: 0,
+        health: 100,
+        attack: 10,
+        defense: 0,
+        speed: 10,
+        miss: 5,
+        crit: 5,
+      )
     end
 
     private
@@ -219,6 +239,7 @@ module ::DiscourseRwcnPk
           # crit
           if rng.rand(100) < guest.crit
             damage = guest.attack * 2 - master.defense
+            damage = 1 if damage <= 0
             master_health -= damage
             battle_log.push type: "attack",
                             crit: true,
@@ -228,6 +249,7 @@ module ::DiscourseRwcnPk
             # normal
           else
             damage = guest.attack * 1 - master.defense
+            damage = 1 if damage <= 0
             master_health -= damage
             battle_log.push type: "attack",
                             damage: damage,
@@ -246,6 +268,7 @@ module ::DiscourseRwcnPk
           # crit
           if rng.rand(100) < master.crit
             damage = master.attack * 2 - guest.defense
+            damage = 1 if damage <= 0
             guest_health -= damage
             battle_log.push type: "attack",
                             crit: true,
@@ -255,6 +278,7 @@ module ::DiscourseRwcnPk
             # normal
           else
             damage = master.attack * 1 - guest.defense
+            damage = 1 if damage <= 0
             guest_health -= damage
             battle_log.push type: "attack",
                             damage: damage,
@@ -277,11 +301,7 @@ module ::DiscourseRwcnPk
       case result
       when "win"
         temp_rank = guest_rank_rank
-        guest_rank.update!(
-          win: guest_rank.win + 1,
-          rank_: master_rank_rank,
-          day_try: guest_rank.day_try - 1,
-        )
+        guest_rank.update!(win: guest_rank.win + 1, rank_: master_rank_rank)
         master_rank.update!(rank_: temp_rank)
       end
       exp = guest.exp + 5
