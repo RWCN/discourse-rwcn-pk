@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 class UserRwcnPkStat < ActiveRecord::Base
   self.primary_key = :user_id
-  belongs_to :user
 
   validates :level,
             :exp,

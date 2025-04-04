@@ -221,82 +221,16 @@ module ::DiscourseRwcnPk
       master = UserRwcnPkStat.find(master_user_id)
       guest = UserRwcnPkStat.find(guest_user_id)
 
-      battle_log = []
+      battle = DiscourseRwcnPk::Battle.new(
+        DiscourseRwcnPk::Player.new(guest_username, health: guest.health, attack: guest.attack, defense: guest.defense, crit: guest.crit, miss: guest.miss, speed: guest.speed),
+        DiscourseRwcnPk::Player.new(master_username, health: master.health, attack: master.attack, defense: master.defense, crit: master.crit, miss: master.miss, speed: master.speed)
+      )
 
-      master_health = master.health
-      guest_health = guest.health
+      res = battle.pk
 
-      cycle = 0
-
-      battle_log.push type: "info", info: "battle_start"
-
-      until master_health <= 0 || guest_health <= 0 || cycle >= 500
-        # guest first
-        # miss
-        if rng.rand(100) < master.miss
-          battle_log.push type: "attack", miss: true, from: guest_username, to: master_username
-        else
-          # crit
-          if rng.rand(100) < guest.crit
-            damage = guest.attack * 2 - master.defense
-            damage = 1 if damage <= 0
-            master_health -= damage
-            battle_log.push type: "attack",
-                            crit: true,
-                            damage: damage,
-                            from: guest_username,
-                            to: master_username
-            # normal
-          else
-            damage = guest.attack * 1 - master.defense
-            damage = 1 if damage <= 0
-            master_health -= damage
-            battle_log.push type: "attack",
-                            damage: damage,
-                            from: guest_username,
-                            to: master_username
-          end
-        end
-
-        break if master_health <= 0 || guest_health <= 0
-
-        # then master
-        # miss
-        if rng.rand(100) < guest.miss
-          battle_log.push type: "attack", miss: true, from: master_username, to: guest_username
-        else
-          # crit
-          if rng.rand(100) < master.crit
-            damage = master.attack * 2 - guest.defense
-            damage = 1 if damage <= 0
-            guest_health -= damage
-            battle_log.push type: "attack",
-                            crit: true,
-                            damage: damage,
-                            from: master_username,
-                            to: guest_username
-            # normal
-          else
-            damage = master.attack * 1 - guest.defense
-            damage = 1 if damage <= 0
-            guest_health -= damage
-            battle_log.push type: "attack",
-                            damage: damage,
-                            from: master_username,
-                            to: guest_username
-          end
-        end
-
-        cycle += 1
-      end
-
-      if master_health <= 0
-        result = "win"
-      elsif guest_health <= 0
-        result = "lose"
-      else
-        result = "draw"
-      end
+      result = res[:result]
+      battle_log = [{type: "info", "info": "battle_start"}]
+      battle_log.concat res[:log]
 
       case result
       when "win"
