@@ -12,6 +12,7 @@ DiscourseRwcnPk::Engine.routes.draw do
 
   post "admin/change" => "rwcn_pk#admin_change", :constraints => AdminConstraint.new
   post "admin/clear_all" => "rwcn_pk#admin_clear_all", :constraints => AdminConstraint.new
+  post "admin/reset_all_skillpoint/v1" => "rwcn_pk#admin_reset_all_skillpoint_v1", :constraints => AdminConstraint.new
 end
 
 Discourse::Application.routes.draw do

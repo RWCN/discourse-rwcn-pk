@@ -1,42 +1,24 @@
 import Component from "@glimmer/component";
-import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
 import DButton from "discourse/components/d-button";
 import { ajax } from "discourse/lib/ajax";
 import { i18n } from "discourse-i18n";
 
 export class RwcnPkAdmin extends Component {
-  @tracked userId;
-  @tracked rank;
-
   constructor() {
     super(...arguments);
   }
 
   @action
-  updateUserId(userId) {
-    this.userId = userId;
-  }
-
-  @action
-  updateRank(rank) {
-    this.rank = rank;
-  }
-
-  @action
-  async submit() {
-    await ajax("/rwcn-pk/admin/change", {
+  async clearAllData() {
+    await ajax("/rwcn-pk/admin/clear_all", {
       type: "POST",
-      data: {
-        user_id: this.userId,
-        rank: this.rank,
-      },
     });
   }
 
   @action
-  async clearAllData() {
-    await ajax("/rwcn-pk/admin/clear_all", {
+  async resetAllSkillPoint() {
+    await ajax("/rwcn-pk/admin/reset_all_skillpoint/v1", {
       type: "POST",
     });
   }
@@ -50,6 +32,11 @@ export class RwcnPkAdmin extends Component {
           @class="danger-btn"
           @action={{this.clearAllData}}
           @label="rwcn_pk.admin.clear_all_data"
+        />
+        <DButton
+          @class="danger-btn"
+          @action={{this.resetAllSkillPoint}}
+          @label="rwcn_pk.admin.reset_all_skill_point"
         />
       </div>
 

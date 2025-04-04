@@ -20,7 +20,7 @@ en:
       remained_day_try: "Today's remained try:"
       skill:
         health_buff: Health Buff
-        health_buff_desc: Boosts Health by 1 point per level
+        health_buff_desc: Boosts Health by 5 point per level
         defense_buff: Defense Buff
         defense_buff_desc: Boosts Defense by 1 point per level
         attack_buff: Attack Buff
@@ -43,3 +43,4 @@ en:
         clear_all_data: Clear All Data
         data_manage: Data Manage
         other_manage: Other Manage
+        reset_all_skill_point: Reset All Skill Point (v1)

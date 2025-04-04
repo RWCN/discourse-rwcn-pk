@@ -20,7 +20,7 @@ zh_CN:
       remained_day_try: "今日剩余尝试次数："
       skill:
         health_buff: 生命强化
-        health_buff_desc: 每级提升1点生命
+        health_buff_desc: 每级提升5点生命
         defense_buff: 防御强化
         defense_buff_desc: 每级提升1点防御
         attack_buff: 攻击强化
@@ -43,3 +43,4 @@ zh_CN:
         clear_all_data: 清空所有数据
         data_manage: 数据管理
         other_manage: 其他管理
+        reset_all_skill_point: 重置所有技能点（v1）

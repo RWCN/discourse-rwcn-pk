@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 module ::DiscourseRwcnPk
   class Battle
+    attr_reader :round
+    
     def initialize(guest, master)
       @round = 0
       @master = master

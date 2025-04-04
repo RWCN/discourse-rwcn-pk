@@ -122,7 +122,7 @@ module ::DiscourseRwcnPk
         render head: :bad_request
       else
         user_stat.update!(
-          health: user_stat.health + health,
+          health: user_stat.health + health * 5,
           defense: user_stat.defense + defense,
           attack: user_stat.attack + attack,
           speed: user_stat.speed + speed,
@@ -185,6 +185,18 @@ module ::DiscourseRwcnPk
       )
     end
 
+    def admin_reset_all_skillpoint_v1
+      UserRwcnPkStat.find_each do |stat|
+        skill_point = stat.skill_point
+        skill_point += stat.health - 100
+        skill_point += stat.attack - 10
+        skill_point += stat.defense - 0
+        skill_point += stat.speed - 10
+        skill_point = skill_point.to_int
+        stat.update!(health: 100, attack: 10, defense: 0, speed: 10, skill_point: skill_point)
+      end
+    end
+
     private
 
     def rank_params
@@ -205,7 +217,7 @@ module ::DiscourseRwcnPk
 
     def pk(master_user_id, guest_user_id)
       master_username = User.find(master_user_id).username
-      guest_username = User.find(guest_user_id).guest_username
+      guest_username = User.find(guest_user_id).username
       last_rank = UserRwcnPkRank.maximum(:rank_) || 1
       last_rank += 1 if last_rank != 1
 
@@ -249,6 +261,7 @@ module ::DiscourseRwcnPk
       {
         result: result,
         log: battle_log,
+        round: battle.round,
         master: {
           username: master_user.username,
           name: master_user.display_name,

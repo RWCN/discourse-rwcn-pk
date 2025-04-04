@@ -16,7 +16,7 @@ module ::DiscourseRwcnPk
     end
 
     def dead?
-      health <= 0
+      @health <= 0
     end
 
     def battle(player, rng)
@@ -26,13 +26,13 @@ module ::DiscourseRwcnPk
       logs = []
       if player.speed <= 0 || (@speed > 0 && rng.rand(@speed) > rng.rand(player.speed))
         logs.concat battle_l(player, rng)
-        if player.dead?
+        if player.dead? || dead?
           return logs
         end
         logs.concat battle_r(player, rng)
       else
         logs.concat battle_r(player, rng)
-        if dead?
+        if player.dead? || dead?
           return logs
         end
         logs.concat battle_l(player, rng)
@@ -53,13 +53,13 @@ module ::DiscourseRwcnPk
           damage *= 2
           crit = true
         end
-        player.health -= damage - player.defense
+        damage -= player.defense
+        player.health -= damage
         if crit
           logs.push type: "attack", crit: true, damage: damage, from: @name, to: player.name
         else
           logs.push type: "attack", damage: damage, from: @name, to: player.name
         end
-        logs
       end
       logs
     end
@@ -75,13 +75,13 @@ module ::DiscourseRwcnPk
           damage *= 2
           crit = true
         end
-        @health -= damage - @defense
+        damage -= @defense
+        @health -= damage
         if crit
           logs.push type: "attack", crit: true, damage: damage, from: player.name, to: @name
         else
           logs.push type: "attack", damage: damage, from: player.name, to: @name
         end
-        logs
       end
       logs
     end

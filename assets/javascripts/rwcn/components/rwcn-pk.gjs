@@ -29,7 +29,20 @@ export class RwcnPk extends Component {
   @tracked battleLogProgress = 0;
   @tracked healths = [];
 
-  previewSkill = (skill) => this.currentStat[skill] + this.skillsToAlloc[skill];
+  cannot_skill_realloc = (skill) => {
+    return this.skillsToAlloc[skill] <= 0;
+  };
+
+  previewSkill = (skill) =>
+    this.currentStat[skill] +
+    (() => {
+      switch (skill) {
+        case "health":
+          return this.skillsToAlloc[skill] * 5;
+        default:
+          return this.skillsToAlloc[skill];
+      }
+    })();
 
   translateLog = (log) => {
     switch (log.type) {
@@ -67,27 +80,6 @@ export class RwcnPk extends Component {
       }
     }
   };
-
-  slicedLog = () =>
-    this.battle.log.slice(0, this.battleLogProgress + 1).reverse();
-
-  currentHealthStyles = () => [
-    htmlSafe(
-      `width:${
-        (this.healths[0][this.battleLogProgress] / this.battle.guest.health) *
-        100
-      }%;`
-    ),
-    htmlSafe(
-      `width:${
-        (this.healths[1][this.battleLogProgress] / this.battle.master.health) *
-        100
-      }%;`
-    ),
-  ];
-
-  currentGuestHealthStyle = () => this.currentHealthStyles()[0];
-  currentMasterHealthStyle = () => this.currentHealthStyles()[1];
 
   constructor() {
     super(...arguments);
@@ -135,56 +127,65 @@ export class RwcnPk extends Component {
     );
   }
 
+  get slicedLog() {
+    return this.battle.log.slice(0, this.battleLogProgress + 1).reverse();
+  }
+
+  get currentGuestHealthStyle() {
+    return this.currentHealthStyles[0];
+  }
+
+  get currentMasterHealthStyle() {
+    return this.currentHealthStyles[1];
+  }
+
+  get currentHealthStyles() {
+    return [
+      htmlSafe(
+        this.healths[0][this.battleLogProgress] >= 0
+          ? `width:${
+              (this.healths[0][this.battleLogProgress] /
+                this.battle.guest.health) *
+              100
+            }%;`
+          : "width:0%;"
+      ),
+      htmlSafe(
+        this.healths[1][this.battleLogProgress] >= 0
+          ? `width:${
+              (this.healths[1][this.battleLogProgress] /
+                this.battle.master.health) *
+              100
+            }%;`
+          : "width:0%"
+      ),
+    ];
+  }
+
   #computeHealths() {
     const battle = this.battle;
     const ctx = battle.log;
-    const [guestHealth, masterHealth] = ctx.reduce(
-      (acc, cur) => {
-        switch (cur.type) {
-          case "attack": {
-            const damage = cur.damage || 0;
-            switch (cur.to) {
-              case battle.guest.username:
-                return {
-                  result: [
-                    [...acc.result[0], acc.last[0] - damage],
-                    [...acc.result[1], acc.last[1]],
-                  ],
-                  last: [acc.last[0] - damage, acc.last[1]],
-                };
-              case battle.master.username:
-                return {
-                  result: [
-                    [...acc.result[0], acc.last[0]],
-                    [...acc.result[1], acc.last[1] - damage],
-                  ],
-                  last: [acc.last[0], acc.last[1] - damage],
-                };
-              default:
-                return {
-                  result: [
-                    [...acc.result[0], acc.last[0]],
-                    [...acc.result[1], acc.last[1]],
-                  ],
-                  last: acc.last,
-                };
-            }
-          }
-          default:
-            return {
-              result: [
-                [...acc.result[0], acc.last[0]],
-                [...acc.result[1], acc.last[1]],
-              ],
-              last: acc.last,
-            };
+    const [guestHealth, masterHealth] = [
+      [battle.guest.health],
+      [battle.master.health],
+    ];
+    for (const log of ctx.slice(1)) {
+      if (log.type === "attack") {
+        if (log.to === battle.guest.username) {
+          guestHealth.push(guestHealth.at(-1) - (log.damage || 0));
+          masterHealth.push(masterHealth.at(-1));
+        } else if (log.to === battle.master.username) {
+          guestHealth.push(guestHealth.at(-1));
+          masterHealth.push(masterHealth.at(-1) - (log.damage || 0));
+        } else {
+          guestHealth.push(guestHealth.at(-1));
+          masterHealth.push(masterHealth.at(-1));
         }
-      },
-      {
-        result: [[], []],
-        last: [battle.guest.health, battle.master.health],
+      } else {
+        guestHealth.push(guestHealth.at(-1));
+        masterHealth.push(masterHealth.at(-1));
       }
-    ).result;
+    }
     return [guestHealth, masterHealth];
   }
 
@@ -323,7 +324,7 @@ export class RwcnPk extends Component {
             <div class="health-bar">
               <div
                 class="health-value"
-                style={{(this.currentGuestHealthStyle)}}
+                style={{this.currentGuestHealthStyle}}
               ></div>
             </div>
           </div>
@@ -340,12 +341,12 @@ export class RwcnPk extends Component {
             <div class="health-bar">
               <div
                 class="health-value"
-                style={{(this.currentMasterHealthStyle)}}
+                style={{this.currentMasterHealthStyle}}
               ></div>
             </div>
           </div>
           <div class="battle-log">
-            {{#each (this.slicedLog) as |_log|}}
+            {{#each this.slicedLog as |_log|}}
               <div class="log-entry">{{(this.translateLog _log)}}</div>
             {{/each}}
           </div>
@@ -372,26 +373,26 @@ export class RwcnPk extends Component {
           <div id="rwcn-pk-skill-panel" class="skill-panel">
             <div class="skill-header">
               <h2>{{i18n "rwcn_pk.skill_point_allocation"}}</h2>
-              <div class="skill-points">{{i18n
-                  "rwcn_pk.remained_skill_point"
-                }}<span>{{this.availableSkillPoint}}</span></div>
+              <div class="skill-points">
+                {{i18n "rwcn_pk.remained_skill_point"}}
+                <span>{{this.availableSkillPoint}}</span></div>
             </div>
 
             <div class="skill-item">
               <div class="skill-icon"></div>
               <div class="skill-info">
-                <div class="skill-name">{{i18n
-                    "rwcn_pk.skill.health_buff"
-                  }}</div>
-                <div class="skill-desc">{{i18n
-                    "rwcn_pk.skill.health_buff_desc"
-                  }}</div>
+                <div class="skill-name">
+                  {{i18n "rwcn_pk.skill.health_buff"}}
+                </div>
+                <div class="skill-desc">
+                  {{i18n "rwcn_pk.skill.health_buff_desc"}}
+                </div>
               </div>
               <div class="skill-controls">
                 <DButton
                   @class="skill-button"
                   @icon="minus"
-                  @disabled={{this.noAllocedSkillPoint}}
+                  @disabled={{this.cannot_skill_realloc "health"}}
                   @action={{fn this.reallocSkillPoint "health"}}
                 />
                 <div class="skill-level">{{(this.previewSkill "health")}}</div>
@@ -407,18 +408,18 @@ export class RwcnPk extends Component {
             <div class="skill-item">
               <div class="skill-icon"></div>
               <div class="skill-info">
-                <div class="skill-name">{{i18n
-                    "rwcn_pk.skill.defense_buff"
-                  }}</div>
-                <div class="skill-desc">{{i18n
-                    "rwcn_pk.skill.defense_buff_desc"
-                  }}</div>
+                <div class="skill-name">
+                  {{i18n "rwcn_pk.skill.defense_buff"}}
+                </div>
+                <div class="skill-desc">
+                  {{i18n "rwcn_pk.skill.defense_buff_desc"}}
+                </div>
               </div>
               <div class="skill-controls">
                 <DButton
                   @class="skill-button"
                   @icon="minus"
-                  @disabled={{this.noAllocedSkillPoint}}
+                  @disabled={{this.cannot_skill_realloc "defense"}}
                   @action={{fn this.reallocSkillPoint "defense"}}
                 />
                 <div class="skill-level">{{(this.previewSkill "defense")}}</div>
@@ -434,18 +435,18 @@ export class RwcnPk extends Component {
             <div class="skill-item">
               <div class="skill-icon"></div>
               <div class="skill-info">
-                <div class="skill-name">{{i18n
-                    "rwcn_pk.skill.attack_buff"
-                  }}</div>
-                <div class="skill-desc">{{i18n
-                    "rwcn_pk.skill.attack_buff_desc"
-                  }}</div>
+                <div class="skill-name">
+                  {{i18n "rwcn_pk.skill.attack_buff"}}
+                </div>
+                <div class="skill-desc">
+                  {{i18n "rwcn_pk.skill.attack_buff_desc"}}
+                </div>
               </div>
               <div class="skill-controls">
                 <DButton
                   @class="skill-button"
                   @icon="minus"
-                  @disabled={{this.noAllocedSkillPoint}}
+                  @disabled={{this.cannot_skill_realloc "attack"}}
                   @action={{fn this.reallocSkillPoint "attack"}}
                 />
                 <div class="skill-level">{{(this.previewSkill "attack")}}</div>
@@ -461,18 +462,18 @@ export class RwcnPk extends Component {
             <div class="skill-item">
               <div class="skill-icon"></div>
               <div class="skill-info">
-                <div class="skill-name">{{i18n
-                    "rwcn_pk.skill.speed_buff"
-                  }}</div>
-                <div class="skill-desc">{{i18n
-                    "rwcn_pk.skill.speed_buff_desc"
-                  }}</div>
+                <div class="skill-name">
+                  {{i18n "rwcn_pk.skill.speed_buff"}}
+                </div>
+                <div class="skill-desc">
+                  {{i18n "rwcn_pk.skill.speed_buff_desc"}}
+                </div>
               </div>
               <div class="skill-controls">
                 <DButton
                   @class="skill-button"
                   @icon="minus"
-                  @disabled={{this.noAllocedSkillPoint}}
+                  @disabled={{this.cannot_skill_realloc "speed"}}
                   @action={{fn this.reallocSkillPoint "speed"}}
                 />
                 <div class="skill-level">{{(this.previewSkill "speed")}}</div>
