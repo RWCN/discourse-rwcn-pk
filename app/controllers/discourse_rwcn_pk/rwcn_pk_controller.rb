@@ -205,10 +205,7 @@ module ::DiscourseRwcnPk
 
     def pk(master_user_id, guest_user_id)
       master_username = User.find(master_user_id).username
-      guest_username = User.find(guest_user_id).username
-
-      rng = Random.new
-
+      guest_username = User.find(guest_user_id).guest_username
       last_rank = UserRwcnPkRank.maximum(:rank_) || 1
       last_rank += 1 if last_rank != 1
 
