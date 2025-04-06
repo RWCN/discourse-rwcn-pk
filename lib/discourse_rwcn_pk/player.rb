@@ -54,6 +54,7 @@ module ::DiscourseRwcnPk
           crit = true
         end
         damage -= player.defense
+        damage = 1 if damage <= 0
         player.health -= damage
         if crit
           logs.push type: "attack", crit: true, damage: damage, from: @name, to: player.name
@@ -76,6 +77,7 @@ module ::DiscourseRwcnPk
           crit = true
         end
         damage -= @defense
+        damage = 1 if damage <= 0
         @health -= damage
         if crit
           logs.push type: "attack", crit: true, damage: damage, from: player.name, to: @name
