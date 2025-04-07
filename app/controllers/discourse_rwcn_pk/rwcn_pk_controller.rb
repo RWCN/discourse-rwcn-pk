@@ -11,7 +11,7 @@ module ::DiscourseRwcnPk
       current_user_id = current_user.id
 
       if !UserRwcnPkRank.exists?(current_user_id)
-        UserRwcnPkRank.create(
+        UserRwcnPkRank.create!(
           user_id: current_user_id,
           rank_: (UserRwcnPkRank.maximum(:rank_) || 0) + 1,
           win: 0,
@@ -25,7 +25,7 @@ module ::DiscourseRwcnPk
       end
 
       if !UserRwcnPkStat.exists?(current_user_id)
-        UserRwcnPkStat.create(
+        UserRwcnPkStat.create!(
           user_id: current_user_id,
           level: 1,
           exp: 0,
