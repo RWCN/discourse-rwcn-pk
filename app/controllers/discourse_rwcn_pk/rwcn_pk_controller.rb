@@ -5,7 +5,6 @@ module ::DiscourseRwcnPk
     requires_plugin PLUGIN_NAME
 
     def index
-      render json: {}
     end
 
     def create
@@ -39,8 +38,6 @@ module ::DiscourseRwcnPk
           crit: 5,
         )
       end
-
-      render json: {}
     end
 
     def rank
@@ -115,8 +112,8 @@ module ::DiscourseRwcnPk
       attack = params[:attack].to_i
       speed = params[:speed].to_i
 
-      render status: :bad_request if health < 0 || defense < 0 || attack < 0 || speed < 0
-      render status: :bad_request if !(health > 0 || defense > 0 || attack > 0 || speed > 0)
+      return render status: :bad_request if health < 0 || defense < 0 || attack < 0 || speed < 0
+      return render status: :bad_request if !(health > 0 || defense > 0 || attack > 0 || speed > 0)
 
       if user_stat.skill_point < health + defense + attack + speed
         render head: :bad_request
@@ -128,7 +125,6 @@ module ::DiscourseRwcnPk
           speed: user_stat.speed + speed,
           skill_point: user_stat.skill_point - (health + defense + attack + speed),
         )
-        render json: {}
       end
     end
 
@@ -165,8 +161,6 @@ module ::DiscourseRwcnPk
       rank = params[:rank].to_i
 
       UserRwcnPkRank.find(user_id).update(rank_: rank)
-
-      render json: {}
     end
 
     def admin_clear_all
