@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 module ::DiscourseRwcnPk
   class Player
-    attr_reader :name, :max_health, :attack, :defense, :speed, :crit, :miss
-    attr_accessor :health, :defense_weaken
+    attr_reader :name, :max_health, :attack, :max_defense, :speed, :crit, :miss
+    attr_accessor :health, :defense
 
     def initialize(name, stats)
       @name = name
@@ -10,7 +10,7 @@ module ::DiscourseRwcnPk
       @health = stats[:health]
       @attack = stats[:attack]
       @defense = stats[:defense]
-      @defense_weaken = 0
+      @max_defense = stats[:defense]
       @speed = stats[:speed]
       @crit = stats[:crit]
       @miss = stats[:miss]
@@ -45,23 +45,31 @@ module ::DiscourseRwcnPk
     def do_attack(player, **opts)
       logs = []
       rng = opts[:rng]
-      if rng.rand(100) < player.miss
+
+      dice = rng.rand(100)
+
+      if dice < player.miss
         logs.push type: "attack", miss: true, from: @name, to: player.name
       else
         damage = @attack
         crit = false
-        if rng.rand(100) < @crit
+        if dice < @crit
           damage *= 2
           crit = true
         end
         damage -= player.defense
         damage = 1 if damage <= 0
+        can_defense_weaken = damage < 5
         player.health -= damage
+        msg = { type: "attack", damage: damage, from: @name, to: player.name }
         if crit
-          logs.push type: "attack", crit: true, damage: damage, from: @name, to: player.name
-        else
-          logs.push type: "attack", damage: damage, from: @name, to: player.name
+          msg[:crit] = true
+          if can_defense_weaken
+            player.defense -= 4 * dice * player.defense / 100 
+            player.defense = @attack - 5 if (@attack - player.defense) <= 5
+          end
         end
+        logs.push msg
       end
       logs
     end
