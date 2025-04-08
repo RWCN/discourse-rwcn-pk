@@ -5,6 +5,7 @@ import { action } from "@ember/object";
 import { htmlSafe } from "@ember/template";
 import ConditionalLoadingSpinner from "discourse/components/conditional-loading-spinner";
 import DButton from "discourse/components/d-button";
+import DModal from "discourse/components/d-modal";
 import avatar from "discourse/helpers/avatar";
 import { ajax } from "discourse/lib/ajax";
 import { bind } from "discourse/lib/decorators";
@@ -28,6 +29,9 @@ export class RwcnPk extends Component {
   @tracked playingBattle = false;
   @tracked battleLogProgress = 0;
   @tracked healths = [];
+  @tracked modalIsVisible = false;
+  @tracked modalTitle = "";
+  @tracked modalContent = "";
 
   cannot_skill_realloc = (skill) => {
     return this.skillsToAlloc[skill] <= 0;
@@ -325,7 +329,7 @@ export class RwcnPk extends Component {
               <div
                 class="health-value"
                 style={{this.currentGuestHealthStyle}}
-              ></div>
+              />
             </div>
           </div>
 
@@ -342,7 +346,7 @@ export class RwcnPk extends Component {
               <div
                 class="health-value"
                 style={{this.currentMasterHealthStyle}}
-              ></div>
+              />
             </div>
           </div>
           <div class="battle-log">
@@ -363,7 +367,7 @@ export class RwcnPk extends Component {
                 <div
                   class="exp-progress"
                   style={{this.currentExpBarProgressStyle}}
-                ></div>
+                />
                 <div class="exp-text">{{this.currentStat.exp}}/20</div>
               </div>
             </div>
@@ -375,11 +379,12 @@ export class RwcnPk extends Component {
               <h2>{{i18n "rwcn_pk.skill_point_allocation"}}</h2>
               <div class="skill-points">
                 {{i18n "rwcn_pk.remained_skill_point"}}
-                <span>{{this.availableSkillPoint}}</span></div>
+                <span>{{this.availableSkillPoint}}</span>
+              </div>
             </div>
 
             <div class="skill-item">
-              <div class="skill-icon"></div>
+              <div class="skill-icon" />
               <div class="skill-info">
                 <div class="skill-name">
                   {{i18n "rwcn_pk.skill.health_buff"}}
@@ -406,7 +411,7 @@ export class RwcnPk extends Component {
             </div>
 
             <div class="skill-item">
-              <div class="skill-icon"></div>
+              <div class="skill-icon" />
               <div class="skill-info">
                 <div class="skill-name">
                   {{i18n "rwcn_pk.skill.defense_buff"}}
@@ -433,7 +438,7 @@ export class RwcnPk extends Component {
             </div>
 
             <div class="skill-item">
-              <div class="skill-icon"></div>
+              <div class="skill-icon" />
               <div class="skill-info">
                 <div class="skill-name">
                   {{i18n "rwcn_pk.skill.attack_buff"}}
@@ -460,7 +465,7 @@ export class RwcnPk extends Component {
             </div>
 
             <div class="skill-item">
-              <div class="skill-icon"></div>
+              <div class="skill-icon" />
               <div class="skill-info">
                 <div class="skill-name">
                   {{i18n "rwcn_pk.skill.speed_buff"}}
@@ -542,6 +547,14 @@ export class RwcnPk extends Component {
         </ConditionalLoadingSpinner>
       {{/if}}
     </div>
+    {{#if this.modalIsVisible}}
+      <DModal
+        @title={{this.modalTitle}}
+        @closeModal={{fn (mut this.modalIsVisible) false}}
+      >
+        {{this.modalContent}}
+      </DModal>
+    {{/if}}
   </template>
 }
 
