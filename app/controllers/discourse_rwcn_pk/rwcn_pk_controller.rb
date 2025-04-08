@@ -164,7 +164,7 @@ module ::DiscourseRwcnPk
 
     def admin_reset_all_skillpoint_v1
       DiscourseRwcnPk::UserRwcnPkStat.find_each do |stat|
-        skill_point = (stat.skill_point + (stat.level - 1) * 5).to_i
+        skill_point = ((stat.level - 1) * 5).to_i
         stat.update!(health: 100, attack: 10, defense: 0, speed: 10, skill_point: skill_point)
       end
     end
