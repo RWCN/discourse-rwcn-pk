@@ -65,12 +65,12 @@ module ::DiscourseRwcnPk
         if crit
           msg[:crit] = true
           if can_defense_weaken
-            player.defense -= 5 * dice * player.defense / 100 
+            player.defense -= 20 * player.defense / 100 
             player.defense = @attack - 5 if (@attack - player.defense) <= 5
           end
         else
           if can_defense_weaken
-            player.defense -= 5 * player.defense / 100 
+            player.defense -= 10 * player.defense / 100 
             player.defense = @attack - 5 if (@attack - player.defense) <= 5
           end
         end
