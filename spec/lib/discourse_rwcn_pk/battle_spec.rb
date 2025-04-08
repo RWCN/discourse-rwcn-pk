@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe DiscourseRwcnPk::Battle do
   describe "#pk" do
     context "with no crit and miss" do

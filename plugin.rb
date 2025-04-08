@@ -19,6 +19,8 @@ module ::DiscourseRwcnPk
 end
 
 require_relative "lib/discourse_rwcn_pk/engine"
+require_relative "lib/discourse_rwcn_pk/battle"
+require_relative "lib/discourse_rwcn_pk/player"
 
 after_initialize do
   # Code which should run after Rails has finished booting

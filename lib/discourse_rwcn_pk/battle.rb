@@ -13,7 +13,7 @@ module ::DiscourseRwcnPk
       logs = []
       rng = Random.new
       until @guest.dead? || @master.dead? || @round > 500
-        logs.concat @guest.battle(@master, rng)
+        logs.concat @guest.battle(@master, rng: rng)
         @round += 1
       end
       if @master.dead?

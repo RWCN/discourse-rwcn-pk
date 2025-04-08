@@ -10,9 +10,11 @@ DiscourseRwcnPk::Engine.routes.draw do
   post "challenge.json" => "rwcn_pk#challenge"
   post "alloc_sp.json" => "rwcn_pk#alloc_sp"
 
-  post "admin/change" => "rwcn_pk#admin_change", :constraints => AdminConstraint.new
-  post "admin/clear_all" => "rwcn_pk#admin_clear_all", :constraints => AdminConstraint.new
-  post "admin/reset_all_skillpoint/v1" => "rwcn_pk#admin_reset_all_skillpoint_v1", :constraints => AdminConstraint.new
+  scope "admin" do
+    post "change" => "rwcn_pk#admin_change", :constraints => AdminConstraint.new
+    post "clear_all" => "rwcn_pk#admin_clear_all", :constraints => AdminConstraint.new
+    post "reset_all_skillpoint/v1" => "rwcn_pk#admin_reset_all_skillpoint_v1", :constraints => AdminConstraint.new
+  end
 end
 
 Discourse::Application.routes.draw do

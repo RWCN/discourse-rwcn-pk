@@ -10,33 +10,16 @@ module ::DiscourseRwcnPk
     def create
       current_user_id = current_user.id
 
-      if !UserRwcnPkRank.exists?(current_user_id)
-        UserRwcnPkRank.create!(
-          user_id: current_user_id,
-          rank_: (UserRwcnPkRank.maximum(:rank_) || 0) + 1,
-          win: 0,
-          day_try: 10,
-          last_battle_date: Date.current,
-        )
+      if !DiscourseRwcnPk::UserRwcnPkRank.exists?(current_user_id)
+        DiscourseRwcnPk::UserRwcnPkRank.create_rank!(current_user_id)
       end
 
-      if UserRwcnPkRank.find(current_user_id).last_battle_date != Date.current
-        UserRwcnPkRank.find(current_user_id).update!(day_try: 10, last_battle_date: Date.current)
+      if DiscourseRwcnPk::UserRwcnPkRank.find(current_user_id).last_battle_date != Date.current
+        DiscourseRwcnPk::UserRwcnPkRank.find(current_user_id).update!(day_try: 10, last_battle_date: Date.current)
       end
 
-      if !UserRwcnPkStat.exists?(current_user_id)
-        UserRwcnPkStat.create!(
-          user_id: current_user_id,
-          level: 1,
-          exp: 0,
-          skill_point: 0,
-          health: 100,
-          attack: 10,
-          defense: 0,
-          speed: 10,
-          miss: 5,
-          crit: 5,
-        )
+      if !DiscourseRwcnPk::UserRwcnPkStat.exists?(current_user_id)
+        DiscourseRwcnPk::UserRwcnPkStat.create_stat!(current_user_id)
       end
     end
 
@@ -45,7 +28,7 @@ module ::DiscourseRwcnPk
       start = params.fetch(:start, 1).to_i
       end_ = params.fetch(:end, 100).to_i
       rank =
-        UserRwcnPkRank
+        DiscourseRwcnPk::UserRwcnPkRank
           .select(:user_id, :rank_, :win)
           .where(rank_: start..end_)
           .order(:rank_)
@@ -60,7 +43,7 @@ module ::DiscourseRwcnPk
                      avatar_template: user.avatar_template_url,
                      rank: r.rank_,
                      win: r.win,
-                     level: UserRwcnPkStat.find(r.user_id).level,
+                     level: DiscourseRwcnPk::UserRwcnPkStat.find(r.user_id).level,
                    }
                  end,
              }
@@ -69,9 +52,9 @@ module ::DiscourseRwcnPk
     def current_rank
       current_user_id = current_user.id
       current_username = current_user.username
-      current_user_q = UserRwcnPkRank.find(current_user_id)
+      current_user_q = DiscourseRwcnPk::UserRwcnPkRank.find(current_user_id)
       current_user_rank = current_user_q.rank_
-      current_user_stat = UserRwcnPkStat.find(current_user_id)
+      current_user_stat = DiscourseRwcnPk::UserRwcnPkStat.find(current_user_id)
 
       render json: {
                rank: current_user_rank,
@@ -88,7 +71,7 @@ module ::DiscourseRwcnPk
     def current_stat
       current_user_id = current_user.id
       current_username = current_user.username
-      user_stat = UserRwcnPkStat.find(current_user_id)
+      user_stat = DiscourseRwcnPk::UserRwcnPkStat.find(current_user_id)
 
       render json: {
                username: current_username,
@@ -106,7 +89,7 @@ module ::DiscourseRwcnPk
 
     def alloc_sp
       params = alloc_sp_params
-      user_stat = UserRwcnPkStat.find(current_user.id)
+      user_stat = DiscourseRwcnPk::UserRwcnPkStat.find(current_user.id)
       health = params[:health].to_i
       defense = params[:defense].to_i
       attack = params[:attack].to_i
@@ -130,9 +113,9 @@ module ::DiscourseRwcnPk
 
     def available_challenge_targets
       current_user_id = current_user.id
-      current_user_rank = UserRwcnPkRank.select(:rank_).find(current_user_id).rank_
+      current_user_rank = DiscourseRwcnPk::UserRwcnPkRank.select(:rank_).find(current_user_id).rank_
       available =
-        UserRwcnPkRank
+        DiscourseRwcnPk::UserRwcnPkRank
           .where.not(user_id: current_user_id)
           .where(rank_: current_user_rank..(current_user_rank - 5))
           .pluck(:user_id)
@@ -143,11 +126,11 @@ module ::DiscourseRwcnPk
 
     def challenge
       current_user_id = current_user.id
-      current_user_rank = UserRwcnPkRank.find(current_user_id)
+      current_user_rank = DiscourseRwcnPk::UserRwcnPkRank.find(current_user_id)
       return render status: :bad_request, json: { err: "try" } if current_user_rank.day_try <= 0
       target_username = challenge_params[:username]
       target_user_id = User.find_by(username: target_username).id
-      target_user_rank = UserRwcnPkRank.find(target_user_id)
+      target_user_rank = DiscourseRwcnPk::UserRwcnPkRank.find(target_user_id)
       if (current_user_rank.rank_ - target_user_rank.rank_) <= 0
         return render status: :bad_request, json: { err: "rank" }
       end
@@ -160,13 +143,13 @@ module ::DiscourseRwcnPk
       user_id = params[:user_id].to_i
       rank = params[:rank].to_i
 
-      UserRwcnPkRank.find(user_id).update(rank_: rank)
+      DiscourseRwcnPk::UserRwcnPkRank.find(user_id).update(rank_: rank)
     end
 
     def admin_clear_all
-      UserRwcnPkRank.update_all(win: 0, day_try: 10, last_battle_date: Date.current)
+      DiscourseRwcnPk::UserRwcnPkRank.update_all(win: 0, day_try: 10, last_battle_date: Date.current)
 
-      UserRwcnPkStat.update_all(
+      DiscourseRwcnPk::UserRwcnPkStat.update_all(
         level: 1,
         exp: 0,
         skill_point: 0,
@@ -180,7 +163,7 @@ module ::DiscourseRwcnPk
     end
 
     def admin_reset_all_skillpoint_v1
-      UserRwcnPkStat.find_each do |stat|
+      DiscourseRwcnPk::UserRwcnPkStat.find_each do |stat|
         skill_point = stat.skill_point
         skill_point += stat.health - 100
         skill_point += stat.attack - 10
@@ -212,17 +195,17 @@ module ::DiscourseRwcnPk
     def pk(master_user_id, guest_user_id)
       master_username = User.find(master_user_id).username
       guest_username = User.find(guest_user_id).username
-      last_rank = UserRwcnPkRank.maximum(:rank_) || 1
+      last_rank = DiscourseRwcnPk::UserRwcnPkRank.maximum(:rank_) || 1
       last_rank += 1 if last_rank != 1
 
-      guest_rank = UserRwcnPkRank.find(guest_user_id)
+      guest_rank = DiscourseRwcnPk::UserRwcnPkRank.find(guest_user_id)
       guest_rank_rank = guest_rank.rank_
 
-      master_rank = UserRwcnPkRank.find(master_user_id)
+      master_rank = DiscourseRwcnPk::UserRwcnPkRank.find(master_user_id)
       master_rank_rank = master_rank.rank_
 
-      master = UserRwcnPkStat.find(master_user_id)
-      guest = UserRwcnPkStat.find(guest_user_id)
+      master = DiscourseRwcnPk::UserRwcnPkStat.find(master_user_id)
+      guest = DiscourseRwcnPk::UserRwcnPkStat.find(guest_user_id)
 
       battle = DiscourseRwcnPk::Battle.new(
         DiscourseRwcnPk::Player.new(guest_username, health: guest.health, attack: guest.attack, defense: guest.defense, crit: guest.crit, miss: guest.miss, speed: guest.speed),
