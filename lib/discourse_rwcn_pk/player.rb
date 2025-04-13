@@ -46,14 +46,12 @@ module ::DiscourseRwcnPk
       logs = []
       rng = opts[:rng]
 
-      dice = rng.rand(100)
-
-      if dice < player.miss
+      if rng.rand(100) < player.miss
         logs.push type: "attack", miss: true, from: @name, to: player.name
       else
         damage = @attack
         crit = false
-        if dice < @crit
+        if rng.rand(100) < @crit
           damage *= 2
           crit = true
         end
