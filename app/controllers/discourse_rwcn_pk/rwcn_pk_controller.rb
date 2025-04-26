@@ -95,11 +95,11 @@ module ::DiscourseRwcnPk
       attack = params[:attack].to_i
       speed = params[:speed].to_i
 
-      return render status: :bad_request if health < 0 || defense < 0 || attack < 0 || speed < 0
-      return render status: :bad_request if !(health > 0 || defense > 0 || attack > 0 || speed > 0)
+      return render status: :bad_request, json: { error: "NEGATIVE_ALLOC" } if health < 0 || defense < 0 || attack < 0 || speed < 0
+      return render status: :bad_request, json: { error: "EMPTY_ALLOC" } if !(health > 0 || defense > 0 || attack > 0 || speed > 0)
 
       if user_stat.skill_point < health + defense + attack + speed
-        render head: :bad_request
+        render status: :bad_request, json: { error: "SKILL_POINT_NOT_ENOUGH" }
       else
         user_stat.update!(
           health: user_stat.health + health * 5,
@@ -127,12 +127,12 @@ module ::DiscourseRwcnPk
     def challenge
       current_user_id = current_user.id
       current_user_rank = DiscourseRwcnPk::UserRwcnPkRank.find(current_user_id)
-      return render status: :bad_request, json: { err: "try" } if current_user_rank.day_try <= 0
+      return render status: :bad_request, json: { error: "TRY_RAN_OUT" } if current_user_rank.day_try <= 0
       target_username = challenge_params[:username]
       target_user_id = User.find_by(username: target_username).id
       target_user_rank = DiscourseRwcnPk::UserRwcnPkRank.find(target_user_id)
       if (current_user_rank.rank_ - target_user_rank.rank_) <= 0
-        return render status: :bad_request, json: { err: "rank" }
+        return render status: :bad_request, json: { err: "RANK_MISMATCH" }
       end
       current_user_rank.update!(day_try: current_user_rank.day_try - 1)
       render json: pk(target_user_id, current_user_id)
